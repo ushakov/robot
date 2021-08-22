@@ -58,6 +58,7 @@ export default class App extends Component<any, any> {
         </Grid>
         <Grid item xs={12} md={7}>
           <Paper className="field">
+            <p>По клику строятся и разрушаются стены, а также закрашивается и очищается клетка. По двойному клику устанавливается позиция робота</p>
             <FieldD/>
           </Paper>
         </Grid>
