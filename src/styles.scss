@@ -1,0 +1,93 @@
+@import "resetDefaults.scss";
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    padding: 20px;
+}
+
+.program {
+    min-width: 320px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 300;
+    padding: 16px;
+}
+
+.keyword {
+    font-weight: 500;
+    color: #334;
+}
+
+.def {
+    margin-bottom: 10px;
+}
+
+.actionable:hover {
+    background-color: rgb(194, 222, 226);
+}
+
+.current {
+    background-color: rgb(195, 216, 167);
+}
+
+.unfinished-call {
+    border: 1px solid rgb(167, 216, 201);
+}
+
+.indented {
+    border-left: solid 1px;
+    padding-left: 1em;
+}
+
+.add-button, .del-button {
+    display: none;
+    background-color: #ddd;
+    width: 18px;
+}
+.line:hover .add-button, .line:hover .del-button {
+    display: inline;
+}
+
+.curconstruct {
+    background-color: #ddd;
+}
+
+.field {
+    min-width: 320px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 300;
+    padding: 16px;
+}
+
+.field-container {
+    display: flex
+}
+
+.field-row {
+    flex-grow: 1;
+}
+
+.field-hwall {
+    height: 5px;
+    flex-grow: 0;
+}
+
+.field-cell {
+    flex-grow: 1;
+}
+
+.field-cell-painted {
+    background-color: beige;
+}
+
+.field-vwall {
+    width: 5px;
+    flex-grow: 0;
+}
