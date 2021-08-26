@@ -1,5 +1,3 @@
-import { action, observable } from "mobx";
-
 export enum Action {
     MOVE_N = 'шаг на север',
     MOVE_S = 'шаг на юг',
@@ -28,25 +26,3 @@ export const BoolOp_arity = (op: BoolOp) => {
     }
     return 0;
 };
-
-export class BoolExpr {
-    @observable op: BoolOp;
-    @observable left?: BoolExpr;
-    @observable right?: BoolExpr;
-
-    constructor(init: { op: BoolOp, left?: BoolExpr, right?: BoolExpr }) {
-        this.op = BoolOp.PAINTED; // to make compiler happy; would be definitely overriden on the next line
-        Object.assign(this, init);
-    }
-
-    @action.bound
-    setLeft(e?: BoolExpr) {
-        this.left = e
-    }
-
-    @action.bound
-    setRight(e?: BoolExpr) {
-        this.right = e
-    }
-}
-

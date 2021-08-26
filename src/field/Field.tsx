@@ -12,10 +12,10 @@ export class FieldD extends React.Component<{ state?: UIState }, {}>{
         const { field } = this.props.state!
         let rows: React.ReactNode[] = []
         for (let y = 0; y < field.ysize; y++) {
-            rows.push(<FieldHWallRow y={y} />)
+            rows.push(<FieldHWallRow key={`hw-${y}`} y={y} />)
             rows.push(<FieldRow key={`r-${y}`} y={y} />)
         }
-        rows.push(<FieldHWallRow y={field.ysize} />)
+        rows.push(<FieldHWallRow key={`hw-bottom`} y={field.ysize} />)
         return <div className="field-wrapper">
             <div className="field-container">
                 {rows}

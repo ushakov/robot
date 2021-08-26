@@ -85,6 +85,27 @@ export class Field {
         return false
     }
 
+    clone(): Field {
+        let f = new Field()
+        f.setSize(this.xsize, this.ysize)
+
+        console.log(f.vwalls)
+        console.log(this.vwalls)
+
+        for (let ix = 0; ix < this.xsize; ix++) {
+            for (let iy = 0; iy < this.ysize; iy++) {
+                f.painted[ix][iy] = this.painted[ix][iy]
+                if (iy < this.ysize - 1) {
+                    f.hwalls[ix][iy] = this.hwalls[ix][iy]
+                }
+                if (ix < this.xsize - 1) {
+                    f.vwalls[ix][iy] = this.vwalls[ix][iy]
+                }
+            }
+        }
+        return f
+    }
+
     @action.bound
     setWallE(x: number, y: number, wall: boolean) {
         if (x >= this.xsize - 1 || x < 0 || y >= this.ysize || y < 0) return

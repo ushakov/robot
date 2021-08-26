@@ -1,7 +1,15 @@
 import { observable, action } from 'mobx';
-import { Action, BoolExpr } from './Machine';
+import { Field } from 'environment/Field';
+import { Action, BoolOp } from 'environment/Machine';
 
 export class Construct {
+    goodToGo = () => false
+
+    // prepare is called when this construct becomes "next to execute"
+    prepare = () => {}
+    // step is called after prepare and should execute one step and return true iff this construct is finished executing
+    step = (f: Field) => true
+
 }
 
 export class Block {
@@ -30,6 +38,10 @@ export class Block {
     }
 
     setter = (n: number) => (cmd?: Construct) => this.set(n, cmd)
+
+    goodToGo = () => {
+        return this.cmds.every(cmd => cmd?.goodToGo())
+    }
 }
 
 export class ActionStatement extends Construct {
@@ -40,10 +52,11 @@ export class ActionStatement extends Construct {
         this.action = action;
     }
 
+    goodToGo = () => true
 }
 
 export class CallStatement extends Construct {
-    @observable sub?: string
+    @observable.ref sub?: Def
     @observable unfinished: boolean;
 
     constructor() {
@@ -52,9 +65,11 @@ export class CallStatement extends Construct {
     }
 
     @action.bound
-    setName(s?: string) {
+    setSub(s?: Def) {
         this.sub = s
     }
+
+    goodToGo = () => !!this.sub
 }
 
 export class IfPart {
@@ -69,6 +84,8 @@ export class IfPart {
     setCond(c?: BoolExpr) {
         this.cond = c
     }
+
+    goodToGo = () => !!this.cond?.goodToGo() && this.block.goodToGo()
 }
 
 export class IfStatement extends Construct {
@@ -97,6 +114,8 @@ export class IfStatement extends Construct {
     setElse(block?: Block) {
         this.else = block
     }
+
+    goodToGo = () => this.parts.every(part => part.goodToGo()) && (this.else === undefined || this.else.goodToGo())
 }
 
 export class LoopStatement extends Construct {
@@ -112,6 +131,8 @@ export class LoopStatement extends Construct {
     setCond(e?: BoolExpr) {
         this.cond = e
     }
+
+    goodToGo = () => !!this.cond?.goodToGo() && this.body.goodToGo()
 }
 
 export class Def extends Construct {
@@ -127,6 +148,8 @@ export class Def extends Construct {
     setName(s: string): void {
         this.name = s
     }
+
+    goodToGo = () => !!this.name && this.body.goodToGo()
 }
 
 export class Program {
@@ -147,4 +170,43 @@ export class Program {
     addDef(n: number): void {
         this.defs = this.defs.slice(0, n).concat(new Def(), this.defs.slice(n))
     }
+
+    goodToGo = () => this.defs.every(d => d.goodToGo()) && this.main.goodToGo()
 }
+
+export class BoolExpr {
+    @observable op: BoolOp;
+    @observable left?: BoolExpr;
+    @observable right?: BoolExpr;
+
+    constructor(init: { op: BoolOp, left?: BoolExpr, right?: BoolExpr }) {
+        this.op = BoolOp.PAINTED; // to make compiler happy; would be definitely overriden on the next line
+        Object.assign(this, init);
+    }
+
+    @action.bound
+    setLeft(e?: BoolExpr) {
+        this.left = e
+    }
+
+    @action.bound
+    setRight(e?: BoolExpr) {
+        this.right = e
+    }
+    goodToGo = () => {
+        switch (this.op) {
+            case BoolOp.CAN_E:
+            case BoolOp.CAN_S:
+            case BoolOp.CAN_N:
+            case BoolOp.CAN_W:
+            case BoolOp.PAINTED:
+                return true
+            case BoolOp.AND:
+            case BoolOp.OR:
+                return !!this.left?.goodToGo() && !!this.right?.goodToGo()
+            case BoolOp.NOT:
+                return !!this.right?.goodToGo()
+        }
+    }
+}
+

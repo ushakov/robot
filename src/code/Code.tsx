@@ -103,11 +103,11 @@ class CallStatementD extends React.Component<{ state?: UIState, current: boolean
         const alldefs = this.props.state!.program.defs
         let items: MenuAction[] = alldefs.filter((def) => !!def.name).map((def) => ({
             title: def.name!,
-            action: () => { cns.setName(def.name) }
+            action: () => { cns.setSub(def) }
         }))
 
         const { current, cns } = this.props;
-        return <Line cur={current} unfinished={cns.unfinished}><Keyword word="выз" /> <ActiveBlock inline items={items} name={`call ${cns.sub ?? '[...]'}`}>{cns.sub ?? '[...]'}</ActiveBlock></Line>;
+        return <Line cur={current} unfinished={cns.unfinished}><Keyword word="выз" /> <ActiveBlock inline items={items}>{cns.sub?.name ?? '[...]'}</ActiveBlock></Line>;
     }
 }
 

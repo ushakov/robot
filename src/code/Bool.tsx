@@ -2,8 +2,9 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import { ActiveBlock, MenuAction } from "code/Menus";
-import { BoolExpr, BoolOp, BoolOp_arity } from "environment/Machine";
+import { BoolOp, BoolOp_arity } from "environment/Machine";
 import { Keyword } from "code/common";
+import { BoolExpr } from "environment/Program";
 
 
 type BoolExprSetter = (exp?: BoolExpr) => void
