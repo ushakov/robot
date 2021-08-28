@@ -54,9 +54,12 @@ class FieldVWall extends React.Component<{ state?: UIState, x: number, y: number
     }
 
     render() {
-        const { field } = this.props.state!
+        const { field, running } = this.props.state!
         const { x, y } = this.props
-        return <div className={classnames('field-vwall', { 'wall-present': !field.canW(x, y) })} onClick={this.onClick} />
+        return <div
+            className={classnames('field-vwall', { 'wall-present': !field.canW(x, y), 'f-active': !running })}
+            onClick={running ? undefined : this.onClick}
+        />
     }
 }
 
@@ -79,10 +82,16 @@ class FieldCell extends React.Component<{ state?: UIState, x: number, y: number 
     }
 
     render() {
-        const { field, robot } = this.props.state!
+        const { field, robot, running } = this.props.state!
         const { x, y } = this.props
-        const inner = robot?.x === x && robot?.y === y ? <LocalTaxi fontSize="medium"/> : null
-        return <div key={`c-${x}-${y}`} className={classnames('field-cell', { 'field-cell-painted': field.painted[x][y] })} onClick={this.onClick} onDoubleClick={this.setRobot}>{inner}</div>
+        const inner = robot?.x === x && robot?.y === y ? <LocalTaxi fontSize="medium" /> : null
+        return <div
+            key={`c-${x}-${y}`}
+            className={classnames('field-cell', { 'field-cell-painted': field.painted[x][y], 'f-active': !running })}
+            onClick={running ? undefined : this.onClick}
+            onDoubleClick={running ? undefined : this.setRobot}>
+            {inner}
+        </div>
     }
 }
 
@@ -116,8 +125,11 @@ class FieldHWall extends React.Component<{ state?: UIState, x: number, y: number
         field.setWallN(x, y, field.canN(x, y))
     }
     render() {
-        const { field } = this.props.state!
+        const { field, running } = this.props.state!
         const { x, y } = this.props
-        return <div className={classnames('field-hwall-cell', { 'wall-present': !field.canN(x, y) })} onClick={this.onClick}></div>
+        return <div
+            className={classnames('field-hwall-cell', { 'wall-present': !field.canN(x, y), 'f-active': !running })}
+            onClick={running ? undefined : this.onClick}
+        />
     }
 }

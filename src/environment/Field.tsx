@@ -85,12 +85,10 @@ export class Field {
         return false
     }
 
+    @action
     clone(): Field {
         let f = new Field()
         f.setSize(this.xsize, this.ysize)
-
-        console.log(f.vwalls)
-        console.log(this.vwalls)
 
         for (let ix = 0; ix < this.xsize; ix++) {
             for (let iy = 0; iy < this.ysize; iy++) {

@@ -1,15 +1,8 @@
 import { observable, action } from 'mobx';
-import { Field } from 'environment/Field';
 import { Action, BoolOp } from 'environment/Machine';
 
 export class Construct {
     goodToGo = () => false
-
-    // prepare is called when this construct becomes "next to execute"
-    prepare = () => {}
-    // step is called after prepare and should execute one step and return true iff this construct is finished executing
-    step = (f: Field) => true
-
 }
 
 export class Block {
@@ -57,11 +50,11 @@ export class ActionStatement extends Construct {
 
 export class CallStatement extends Construct {
     @observable.ref sub?: Def
-    @observable unfinished: boolean;
+    @observable unfinished: number;
 
     constructor() {
         super();
-        this.unfinished = false;
+        this.unfinished = 0;
     }
 
     @action.bound
@@ -69,14 +62,24 @@ export class CallStatement extends Construct {
         this.sub = s
     }
 
+    @action.bound
+    setUnfinished(u: boolean) {
+        if (u) {
+            this.unfinished++
+        } else {
+            this.unfinished--
+        }
+    }
+
     goodToGo = () => !!this.sub
 }
 
-export class IfPart {
+export class IfPart extends Construct {
     @observable cond?: BoolExpr
     @observable block: Block
 
     constructor() {
+        super()
         this.block = new Block()
     }
 
@@ -209,4 +212,3 @@ export class BoolExpr {
         }
     }
 }
-

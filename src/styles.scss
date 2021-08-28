@@ -39,6 +39,10 @@ html, body {
     background-color: rgb(195, 216, 167);
 }
 
+.error {
+    background-color: rgb(216, 181, 167);
+}
+
 .unfinished-call {
     border: 1px solid rgb(167, 216, 201);
 }
@@ -101,7 +105,6 @@ html, body {
     flex-grow: 1;
     width: 24px;
     height: 5px;
-    cursor: pointer;
 }
 
 .field-hwall-knot {
@@ -124,10 +127,13 @@ html, body {
 .field-vwall {
     width: 5px;
     flex-grow: 0;
-    cursor: pointer;
     background-color: #ddd;
 }
 
 .wall-present {
     background-color: #334;
+}
+
+.f-active {
+    cursor: pointer;
 }

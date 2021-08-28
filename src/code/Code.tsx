@@ -72,33 +72,30 @@ export class BlockD extends React.Component<{ block: Block }, any> {
     }
 }
 
-@inject('state')
 @observer
-class ConstructD extends React.Component<{ state?: UIState, cns: Construct }, {}> {
+class ConstructD extends React.Component<{ cns: Construct }, {}> {
     render() {
-        const { state, cns } = this.props
-        const cur = state!.current === cns
-
+        const { cns } = this.props
         return <>
-            {cns instanceof ActionStatement && <ActionStatementD current={cur} cns={cns} />}
-            {cns instanceof CallStatement && <CallStatementD current={cur} cns={cns} />}
-            {cns instanceof LoopStatement && <LoopStatementD current={cur} cns={cns} />}
-            {cns instanceof IfStatement && <IfStatementD current={cur} cns={cns} />}
+            {cns instanceof ActionStatement && <ActionStatementD cns={cns} />}
+            {cns instanceof CallStatement && <CallStatementD cns={cns} />}
+            {cns instanceof LoopStatement && <LoopStatementD cns={cns} />}
+            {cns instanceof IfStatement && <IfStatementD cns={cns} />}
         </>
     }
 }
 
 @observer
-class ActionStatementD extends React.Component<{ current: boolean, cns: ActionStatement }, {}> {
+class ActionStatementD extends React.Component<{ cns: ActionStatement }, {}> {
     render() {
-        const { current, cns } = this.props;
-        return <Line cur={current}>{cns.action}</Line>;
+        const { cns } = this.props;
+        return <Line highlightFor={cns}>{cns.action}</Line>;
     }
 }
 
 @inject('state')
 @observer
-class CallStatementD extends React.Component<{ state?: UIState, current: boolean, cns: CallStatement }, {}> {
+class CallStatementD extends React.Component<{ state?: UIState, cns: CallStatement }, {}> {
     render() {
         const alldefs = this.props.state!.program.defs
         let items: MenuAction[] = alldefs.filter((def) => !!def.name).map((def) => ({
@@ -106,17 +103,17 @@ class CallStatementD extends React.Component<{ state?: UIState, current: boolean
             action: () => { cns.setSub(def) }
         }))
 
-        const { current, cns } = this.props;
-        return <Line cur={current} unfinished={cns.unfinished}><Keyword word="выз" /> <ActiveBlock inline items={items}>{cns.sub?.name ?? '[...]'}</ActiveBlock></Line>;
+        const { cns } = this.props;
+        return <Line highlightFor={cns} unfinished={cns.unfinished > 0}><Keyword word="выз" /> <ActiveBlock inline items={items}>{cns.sub?.name ?? '[...]'}</ActiveBlock></Line>;
     }
 }
 
 @observer
-class LoopStatementD extends React.Component<{ current: boolean, cns: LoopStatement }, {}> {
+class LoopStatementD extends React.Component<{ cns: LoopStatement }, {}> {
     render() {
-        const { current, cns } = this.props;
+        const { cns } = this.props;
         return <>
-            <Line cur={current} key={0}><Keyword word="пока" /> <BoolExprD expr={cns.cond} onSet={cns.setCond} /></Line>
+            <Line highlightFor={cns} key={0}><Keyword word="пока" /> <BoolExprD expr={cns.cond} onSet={cns.setCond} /></Line>
             <BlockD block={cns.body} key={1} />
             <Line key={2}><Keyword word="кц" /></Line>
         </>;
@@ -124,11 +121,11 @@ class LoopStatementD extends React.Component<{ current: boolean, cns: LoopStatem
 }
 
 @observer
-class IfPartD extends React.Component<{ part: IfPart, current: boolean }, {}> {
+class IfPartD extends React.Component<{ part: IfPart }, {}> {
     render() {
-        const { part, current } = this.props
+        const { part } = this.props
         return <>
-            <Line cur={current}><Keyword word="при условии" /> <BoolExprD expr={part.cond} onSet={part.setCond} /></Line>
+            <Line><Keyword word="при условии" /> <BoolExprD expr={part.cond} onSet={part.setCond} /></Line>
             <BlockD block={part.block} />
             <Line><Keyword word="конец" /></Line>
         </>;
@@ -148,7 +145,7 @@ class ElsePartD extends React.Component<{ part: Block }, {}> {
 }
 
 @observer
-class IfStatementD extends React.Component<{ current: boolean, cns: IfStatement }, {}> {
+class IfStatementD extends React.Component<{ cns: IfStatement }, {}> {
     render() {
         const { cns } = this.props;
 
@@ -170,10 +167,10 @@ class IfStatementD extends React.Component<{ current: boolean, cns: IfStatement 
 
         let k = 0
         return <>
-            <Line key={k++}><Keyword word="выбор" /></Line>
+            <Line key={k++} highlightFor={cns}><Keyword word="выбор" /></Line>
             <div className="indented">
                 {cns.parts.map((part, i) => <ActiveBlock key={k++} items={makeActions(i)}>
-                    <IfPartD part={part} current={false} />
+                    <IfPartD part={part}/>
                 </ActiveBlock>
                 )}
                 {cns.else && <ActiveBlock items={elseActions}><ElsePartD key={k++} part={cns.else} /></ActiveBlock>}
