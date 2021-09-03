@@ -4,14 +4,13 @@ import { configure } from 'mobx';
 import UIState from 'UIState';
 import { MainProgram } from 'code/Code';
 import 'styles.scss';
-import { Box, Button, Grid, Paper, TextField } from '@material-ui/core';
+import { Box, Button, Grid, Paper } from '@material-ui/core';
 import { ActionStatement, BoolExpr, CallStatement, Def, LoopStatement } from 'environment/Program';
 import { runInAction } from 'mobx';
 import { Action, BoolOp } from 'environment/Machine';
 import { FieldD } from 'field/Field';
-import { TopMenu } from 'TopMenu';
-import { AuthStore } from 'Auth';
-import { AtmSharp } from '@material-ui/icons';
+import { TopMenu } from 'ui/TopMenu';
+import { AuthStore } from 'api/Auth';
 
 configure({ enforceActions: 'observed' });
 
@@ -52,6 +51,9 @@ runInAction(() => {
 class FieldEditor extends Component<{}, {}> {
   render() {
     return <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <TopMenu />
+      </Grid>
       <Grid item xs={12} md={5}>
         <Paper className="program">
           <MainProgram />
@@ -69,7 +71,7 @@ class FieldEditor extends Component<{}, {}> {
 
 @inject('auth')
 @observer
-class Login extends Component<{auth?: AuthStore}, {}> {
+class Login extends Component<{ auth?: AuthStore }, {}> {
   render() {
     const auth = this.props.auth!
     return <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
@@ -89,10 +91,9 @@ export default class App extends Component<any, any> {
       return <p>Loading...</p>
     }
     if (!auth.isAuthenticated) {
-      return <Login/>
+      return <Login />
     }
     return <Provider state={state}>
-      <TopMenu/>
       <FieldEditor />
     </Provider>;
   }

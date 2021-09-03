@@ -1,9 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import UIState from 'UIState';
-import { AppBar, Avatar, Box, Button, ButtonProps, IconButton, Paper, Toolbar } from '@material-ui/core';
-import { SerializeProgram } from 'environment/Program';
-import { AuthStore } from 'Auth';
+import { Avatar, Box, Button, ButtonProps } from '@material-ui/core';
+import { AuthStore } from 'api/Auth';
 import { ArrowBack } from '@material-ui/icons';
 
 const MenuButton = (props: ButtonProps) => {

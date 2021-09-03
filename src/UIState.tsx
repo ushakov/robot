@@ -10,7 +10,6 @@ export default class UIState {
     @observable srcrobot?: Coordinates
     @observable menuOpen: boolean = false
     @observable stepping: boolean = false
-
     @observable env?: Environment
 
     runInterval?: number
