@@ -7,9 +7,6 @@ class Api {
     
     public createClient() {
         const headers = {}
-        // if (window.xsrfHeader !== '{{.xsrfHeader}}') {
-        //     headers[window.xsrfHeader] = window.xsrfToken
-        // }
 
         this.client = axios.create({
             baseURL: config.apibase,

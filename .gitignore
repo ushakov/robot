@@ -5,7 +5,8 @@
 *.so
 *.dylib
 build/
-
+test.db
+auth0_config.json
 # Test binary, built with `go test -c`
 *.test
 
